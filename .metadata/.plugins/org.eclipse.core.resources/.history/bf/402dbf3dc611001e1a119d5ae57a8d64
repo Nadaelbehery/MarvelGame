@@ -1,0 +1,100 @@
+package gui;
+
+import java.io.File;
+
+import engine.Game;
+import engine.Player;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
+public class EndScene {
+	private static final int HEIGHT = 731;
+	private static final int WIDTH = 1300;
+	private AnchorPane mainPane;
+	private Scene mainScene;
+	private Stage mainStage;
+	private Stage menuStage;
+	private Game currentGame;
+	private TextField winner;
+	
+	public EndScene() {
+		
+		
+		
+		mainPane=new AnchorPane();
+		mainScene=new Scene(mainPane,WIDTH,HEIGHT);
+		mainStage=new Stage();
+		mainStage.setScene(mainScene);
+		mainStage.setTitle("Avengers Assemble");
+		mainStage.setResizable(false);
+		Image backgroundImage = new Image(new File("src/resources/maxdef.jpg").toURI().toString());
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT,
+				BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, null);
+		mainPane.setBackground(new Background(background));
+		winner=new TextField();
+		winner.setText("Nade"+"WON");
+//		if((currentGame.checkGameOver()).equals(currentGame.getFirstPlayer())) {
+//			winner.setText(currentGame.getFirstPlayer().getName() +" WON!");
+//		
+//		}else {
+//			winner.setText(currentGame.getSecondPlayer().getName() +" WON!");
+//			
+//
+//		}
+		winner.setLayoutX(100);
+		winner.setLayoutY(100);
+		winner.setFont(new Font("Times New Roman (Headings CS)", 30));
+		
+		mainPane.getChildren().add(winner);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	public void createNewGame(Stage menuStage) {
+		this.menuStage = menuStage;
+		this.menuStage.hide();
+		mainStage.show();
+
+	}
+	public void createNewGame() {
+	
+		mainStage.show();
+
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+}
