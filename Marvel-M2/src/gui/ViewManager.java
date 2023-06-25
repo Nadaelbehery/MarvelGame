@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -63,7 +64,12 @@ public class ViewManager {
 		
 	}
 	private void StartGameButton() {
-		Buttons button=new Buttons("Start Game!");
+		Button button=new Button("Start Game!");
+		button.setPrefSize(250, 50);
+		button.setTranslateY(-55);
+		button.setId("my-button");
+		button.setTextFill(Color.web("#FFFFFF"));
+		button.getStylesheets().add(new File("src/resources/style.css").toURI().toString());
 		mainPane.getChildren().add(button);
 		
 		button.setOnAction(new EventHandler<ActionEvent>() {
@@ -74,7 +80,7 @@ public class ViewManager {
 				if(!player1name.isEmpty() && !player2name.isEmpty() ) {
 					Player Player1=new Player(player1name);
 					Player Player2=new Player(player2name);
-				    GameRegulationsView temp=temp=new GameRegulationsView(Player1,Player2);
+				    GameRegulationsView temp=new GameRegulationsView(Player1,Player2);
 				    temp.createNewGame(mainStage,Player1,Player2);
 					//currentGame=new Game(new Player(player1name),new Player(player2name));
 					//PickChampViewManager gameManager=new PickChampViewManager( /*currentGame,*/Player1,Player2);
@@ -98,19 +104,11 @@ public class ViewManager {
 	
 	private void createLabels() {
 		Label labelPlayer1=new Label("Player 1 name:   ");
-		labelPlayer1.setTextFill(Color.web("#9FADBD"));
-		try {
-			labelPlayer1.setFont(Font.loadFont(new FileInputStream("kenvector_future.ttf"), 23));
-		} catch (FileNotFoundException e) {
-			labelPlayer1.setFont(Font.font("Verdana",23));
-		}
+		labelPlayer1.setTextFill(Color.web("#FFFFFF"));
+		labelPlayer1.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
 		Label labelPlayer2=new Label("Player 2 name:   ");
-		labelPlayer2.setTextFill(Color.web("#9FADBD"));
-		try {
-			labelPlayer2.setFont(Font.loadFont(new FileInputStream("kenvector_future.ttf"), 23));
-		} catch (FileNotFoundException e) {
-			labelPlayer2.setFont(Font.font("Verdana",23));
-		}
+		labelPlayer2.setTextFill(Color.web("#FFFFFF"));
+		labelPlayer2.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
 		//TextField textfield=new TextField();
 		//player1name=textfield.getText();
 		textfield.setPrefColumnCount(10);

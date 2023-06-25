@@ -11,4 +11,5 @@
     <fullyQualifiedTypeName name="javafx.scene.control.ButtonType"/>
     <fullyQualifiedTypeName name="javafx.scene.layout.Region"/>
     <fullyQualifiedTypeName name="java.io.File"/>
+    <fullyQualifiedTypeName name="javafx.scene.text.FontWeight"/>
 </qualifiedTypeNameHistroy>

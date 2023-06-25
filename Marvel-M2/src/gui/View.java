@@ -48,6 +48,7 @@ public class View extends Application {
 			s.show();
 			player1=manager1.getPlayer1();
 			player2=manager1.getPlayer2();
+			
 			//backgroundSound();
 			
 			

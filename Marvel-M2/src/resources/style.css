@@ -1,0 +1,20 @@
+#my-button {
+    -fx-border-width: 2;
+    -fx-font-size:20;
+    -fx-font-weight : bold ;
+    -fx-border-color: #a52c14; 
+    -fx-background-color: #a52c14; 
+    cursor: pointer; // seems like Cursor.HAND
+}
+
+
+#my-button:hover {
+    -fx-background-color: #000000;
+    -fx-border-color: #211f1f; 
+
+}
+
+#my-button:pressed {
+    -fx-background-color: #FFDAB9; /* maybe some other color */
+}
+

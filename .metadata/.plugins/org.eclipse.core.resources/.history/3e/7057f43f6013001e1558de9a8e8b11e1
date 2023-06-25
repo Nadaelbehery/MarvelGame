@@ -1,0 +1,278 @@
+package gui;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import engine.Game;
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.SubScene;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+import model.world.AntiHero;
+import model.world.Champion;
+import model.world.Cover;
+import model.world.Hero;
+import model.world.Villain;
+import javafx.event.EventHandler;
+
+
+public class GameViewManSubScene extends SubScene {
+	private static final int RowNum = 5;
+	private static final int ColNum = 5;
+	private Game CurrentGame;
+	private GridPane root;
+	private ArrayList<Champion> PlayerOneChamps;
+	private ArrayList<Champion> PlayerTwoChamps;
+	private ArrayList<Cover> Covers=new ArrayList<Cover>();
+	
+
+	public GameViewManSubScene(Game currentGame) {
+		super(new GridPane(), 500, 500);
+		// TODO Auto-generated constructor stub
+		this.CurrentGame = currentGame;
+		PlayerOneChamps = CurrentGame.getFirstPlayer().getTeam();
+		PlayerTwoChamps = CurrentGame.getSecondPlayer().getTeam();
+		root = (GridPane) this.getRoot();
+		prefWidth(600);
+		prefHeight(400);
+		for (int i = 0; i < RowNum; i++) {
+			for (int j = 0; j < ColNum; j++) {
+				Rectangle rect = new Rectangle(200, 200, 100, 100);
+				rect.setFill(Color.web("#FFFFFFF"));
+				// rect.setStroke(Color.WHITE);
+				root.add(rect, i, j);
+
+			}
+		}
+		root.setGridLinesVisible(true);
+		placeChampions(CurrentGame);
+		placeCovers();
+		placeCovers1();
+	}
+
+	
+
+	private void placeChampions(Game CurrentGame) {
+
+		for (int i = 0; i < PlayerOneChamps.size(); i++) {
+			Champion temp = PlayerOneChamps.get(i);
+			int x = temp.getLocation().x;
+			
+			int y = temp.getLocation().y;
+			
+			ImageView champImage = DisplayChamp(temp);
+			root.add(champImage, y, 4);
+		}
+		for (int i = 0; i < PlayerTwoChamps.size(); i++) {
+			Champion temp = PlayerTwoChamps.get(i);
+			int x = temp.getLocation().x;
+			int y = temp.getLocation().y;
+			ImageView champImage = DisplayChamp(temp);
+			root.add(champImage, y, 0);
+
+		}
+
+	}
+
+	/*
+	 * public void placeChampions1(Game CurrentGame) {
+	 * 
+	 * for (int i = 0; i < CurrentGame.getFirstPlayer().getTeam().size(); i++) {
+	 * Champion temp =CurrentGame.getFirstPlayer().getTeam().get(i); int x =
+	 * temp.getLocation().x; int y = temp.getLocation().y; ImageView champImage =
+	 * DisplayChamp(temp); root.add(champImage, y, x); } for (int i = 0; i <
+	 * CurrentGame.getSecondPlayer().getTeam().size(); i++) { Champion temp =
+	 * CurrentGame.getSecondPlayer().getTeam().get(i); int x = temp.getLocation().x;
+	 * int y = temp.getLocation().y; ImageView champImage = DisplayChamp(temp);
+	 * root.add(champImage, y, x);
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
+	public void placeChampions1(Game CurrentGame) {
+
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (CurrentGame.getBoard()[i][j] != null && CurrentGame.getBoard()[i][j] instanceof Champion) {
+					Champion temp = (Champion) CurrentGame.getBoard()[i][j];
+					int x = temp.getLocation().x;
+					int y = temp.getLocation().y;
+					ImageView champImage = DisplayChamp(temp);
+					root.add(champImage, y, 4-x);
+
+				}
+			}
+		}
+
+	}
+
+	private ImageView DisplayChamp(Champion champ) {
+		ImageView ChampionImage = new ImageView(new File(champ.getURL()).toURI().toString());
+		ChampionImage.setFitHeight(100);
+		ChampionImage.setFitWidth(100);
+		Tooltip tip = new Tooltip(ChampDetails(champ));
+
+		Tooltip.install(ChampionImage, tip);
+		return ChampionImage;
+
+	}
+
+	public String ChampDetails(Champion champ) {
+		String r = "Name:" + champ.getName() + '\n' + "Current Health Points: " + champ.getCurrentHP() + '\n'
+				+ "Actions Points Per Turn: " + champ.getMaxActionPointsPerTurn() + '\n' + "Mana: " + champ.getMana()
+				+ '\n' + "Attack Range: " + champ.getAttackRange() + '\n' + "Attack Damage: " + champ.getAttackDamage()
+				+ '\n' + "Champions's type ";
+		if (champ instanceof Hero)
+			r = r + "Hero" + '\n';
+		if (champ instanceof Villain)
+			r = r + "Villian" + '\n';
+		if (champ instanceof AntiHero)
+			r = r + "Antihero" + '\n';
+		
+		if((CurrentGame.getFirstPlayer().getLeader()).equals(champ) || (CurrentGame.getSecondPlayer().getLeader()).equals(champ)) {
+			r=r+"Leader : YES"+'\n';
+		}else {
+			r=r+"Leader : NO"+'\n';
+		}
+		r = r + "Applied Effects: ";
+		for (int i = 0; i < champ.getAppliedEffects().size(); i++) {
+			r = r + champ.getAppliedEffects().get(i).getName() + " Duration:"
+					+ champ.getAppliedEffects().get(i).getDuration();
+			if (i != champ.getAppliedEffects().size() - 1) {
+				r = r + ",";
+			}
+
+		}
+		r = r + '\n';
+
+		return r;
+
+	}
+	public String CurrentChampDetails() {
+		Champion champ=CurrentGame.getCurrentChampion();
+		String r = "Name:" + champ.getName() + '\n' + "Current Health Points: " + champ.getCurrentHP() + '\n'
+				+ "Current actions points : " + champ.getCurrentActionPoints() + '\n' + "Mana: " + champ.getMana()+'\n'+"speed: "+champ.getSpeed()
+				+ '\n' + "Attack Range: " + champ.getAttackRange() + '\n' + "Attack Damage: " + champ.getAttackDamage()
+				+ '\n' + "Champions's type ";
+		if (champ instanceof Hero)
+			r = r + "Hero" + '\n';
+		if (champ instanceof Villain)
+			r = r + "Villian" + '\n';
+		if (champ instanceof AntiHero)
+			r = r + "Antihero" + '\n';
+		
+		if((CurrentGame.getFirstPlayer().getLeader()).equals(champ) || (CurrentGame.getSecondPlayer().getLeader()).equals(champ)) {
+			r=r+"Leader : YES"+'\n';
+		}else {
+			r=r+"Leader : NO"+'\n';
+		}
+		r = r + "Applied Effects: ";
+		for (int i = 0; i < champ.getAppliedEffects().size(); i++) {
+			r = r + champ.getAppliedEffects().get(i).getName() + " Duration:"
+					+ champ.getAppliedEffects().get(i).getDuration();
+			if (i != champ.getAppliedEffects().size() - 1) {
+				r = r + ",";
+			}
+
+		}
+		r = r + '\n';
+
+		return r;
+
+	}
+	private void placeCovers1() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (CurrentGame.getBoard()[i][j] instanceof Cover) {
+					Cover cover= (Cover)CurrentGame.getBoard()[i][j];
+					Covers.add(cover);
+
+					
+				}
+			}
+		}
+
+	}
+
+	public void placeCovers() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (CurrentGame.getBoard()[i][j] instanceof Cover) {
+					Cover cover= (Cover)CurrentGame.getBoard()[i][j];
+					//Covers.add(cover);
+					if(cover.getCurrentHP()!=0) {
+					ImageView CoverImage = new ImageView(new File(((Cover) CurrentGame.getBoard()[i][j]).getURL()).toURI().toString() );
+					
+					CoverImage.setFitHeight(100);
+					CoverImage.setFitWidth(100);
+					Tooltip.install(CoverImage,new Tooltip("Current HP: "+cover.getCurrentHP() ));
+					root.add(CoverImage, j, 4-i);
+					}
+				}
+			}
+		}
+
+	}
+	
+
+	public void moveChamp(Champion champ) {
+		int x = champ.getLocation().x;
+		int y = champ.getLocation().y;
+		root.add(DisplayChamp(champ), y,4-x);
+	}
+
+	public void removeChamp(int x, int y, Champion champ) {
+
+		List<Node> inPosition = getNodesByCoordinate(4-x, y);
+		for (int i = 0; i < inPosition.size(); i++) {
+			if (inPosition.get(i) instanceof ImageView) {
+				root.getChildren().remove(inPosition.get(i));
+
+			}
+		}
+
+	}
+
+	private List<Node> getNodesByCoordinate(Integer row, Integer column) {
+		List<Node> matchingNodes = new ArrayList<>();
+		for (Node node : root.getChildren()) {
+			if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+				matchingNodes.add(node);
+			}
+		}
+		return matchingNodes;
+	}
+
+	public void RemoveAllChamps() {
+		List<Node> ChampsLists = new ArrayList();
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				List<Node> matchingNodes = getNodesByCoordinate(j, i);
+				for (int n = 0; n < matchingNodes.size(); n++) {
+					if (matchingNodes.get(n) instanceof ImageView) {
+						root.getChildren().remove(matchingNodes.get(n));
+
+					}
+				}
+
+			}
+		}
+
+	}
+	
+
+	public GridPane getGrid() {
+		return root;
+	}
+
+}

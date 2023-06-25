@@ -32,6 +32,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.world.Champion;
@@ -140,14 +141,7 @@ public class PickChampViewManager {
 			root.getChildren().add(champToPick);
 			initializeListeners(champToPick);
 
-			/*
-			 * champToPick.setOnMousePressed(new EventHandler<MouseEvent>(){ public void
-			 * handle(MouseEvent event) { //
-			 * if(event.getButton().equals(MouseButton.PRIMARY)) {
-			 * champToPick.setIsCircleChoosen(true); //figure how to add to player //} }
-			 * 
-			 * });
-			 */
+			
 		}
 		root.setLayoutX(150);
 		root.setLayoutY(150);
@@ -158,7 +152,7 @@ public class PickChampViewManager {
 	}
 
 	private void createBackground() {
-		Image backgroundImage = new Image(new File("src/resources/stock.jpg").toURI().toString());
+		Image backgroundImage = new Image(new File("src/resources/Pick.jpg").toURI().toString());
 		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT,
 				BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, null);
 		mainPane.setBackground(new Background(background));
@@ -166,7 +160,12 @@ public class PickChampViewManager {
 	}
 
 	private void DoneButton() {
-		Buttons button = new Buttons("Done");
+		Button button = new Button("Done");
+		button.setPrefSize(250, 50);
+		button.setTranslateY(-55);
+		button.setId("my-button");
+		button.setTextFill(Color.web("#FFFFFF"));
+		button.getStylesheets().add(new File("src/resources/style.css").toURI().toString());
 		mainPane.getChildren().add(button);
 
 		button.setOnAction(new EventHandler<ActionEvent>() {
@@ -259,18 +258,11 @@ public class PickChampViewManager {
 	private void DisplayPlayers(String player1, String player2) {
 		Label labelPlayer1 = new Label("Player One: " + player1);
 		labelPlayer1.setTextFill(Color.web("#9FADBD"));
-		try {
-			labelPlayer1.setFont(Font.loadFont(new FileInputStream("kenvector_future.ttf"), 23));
-		} catch (FileNotFoundException e) {
-			labelPlayer1.setFont(Font.font("Verdana", 23));
-		}
+		labelPlayer1.setTextFill(Color.web("#FFFFFF"));
+		labelPlayer1.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
 		Label labelPlayer2 = new Label("Player Two: " + player2);
-		labelPlayer2.setTextFill(Color.web("#9FADBD"));
-		try {
-			labelPlayer2.setFont(Font.loadFont(new FileInputStream("kenvector_future.ttf"), 23));
-		} catch (FileNotFoundException e) {
-			labelPlayer2.setFont(Font.font("Verdana", 23));
-		}
+		labelPlayer2.setTextFill(Color.web("#FFFFFF"));
+		labelPlayer2.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
 		HBox hbox = new HBox(labelPlayer1, labelPlayer2);
 		hbox.setSpacing(200);
 		hbox.setAlignment(Pos.TOP_CENTER);
@@ -288,9 +280,5 @@ public class PickChampViewManager {
 		return ChampionPicked;
 	}
 
-	/*
-	 * private void DisplayChamps() { ChampCards temp=new ChampCards();
-	 * 
-	 * }
-	 */
+	
 }

@@ -47,7 +47,7 @@ public class GameViewManSubScene extends SubScene {
 		for (int i = 0; i < RowNum; i++) {
 			for (int j = 0; j < ColNum; j++) {
 				Rectangle rect = new Rectangle(200, 200, 100, 100);
-				rect.setFill(Color.web("#E7E1E1"));
+				rect.setFill(Color.web("#FFFFFF"));
 				// rect.setStroke(Color.WHITE);
 				root.add(rect, i, j);
 
@@ -57,9 +57,6 @@ public class GameViewManSubScene extends SubScene {
 		placeChampions(CurrentGame);
 		placeCovers();
 		placeCovers1();
-
-		//EndTurnButton();
-
 	}
 
 	

@@ -1,0 +1,279 @@
+package gui;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+import engine.Game;
+import engine.Player;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import model.world.Champion;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+
+public class PickChampViewManager {
+	private static final int HEIGHT = 731;
+	private static final int WIDTH = 1300;
+	private AnchorPane mainPane;
+	private Scene mainScene;
+	private Stage mainStage;
+	private Stage menuStage;
+	private ArrayList<ChampionPicker> Picker = new ArrayList<ChampionPicker>();
+	private ArrayList<Champion> ChampionPicked = new ArrayList<Champion>();
+	// Game currentGame;
+	private int n = 0;
+	private Label playerpick = new Label("Player One choose your leader:");
+
+	private ArrayList<Champion> Champs;
+	private Player player1;
+	private Player player2;
+	// private GameRegulationsView temp;
+
+	public PickChampViewManager( /* Game currentGame, */Player player1, Player player2) {
+		// this.currentGame=currentGame;
+		this.player1 = player1;
+		this.player2 = player2;
+		// temp=new GameRegulationsView();
+		mainPane = new AnchorPane();
+		mainScene = new Scene(mainPane, WIDTH, HEIGHT);
+		mainStage = new Stage();
+		mainStage.setScene(mainScene);
+		mainStage.setTitle("Avengers Assemble");
+		mainStage.setResizable(false);
+		DisplayPlayers(player1.getName(), player2.getName());
+		DoneButton();
+		Label sideNote = new Label("Hold the cursor still on the champion's image for 3 seconds to view details ");
+		sideNote.setFont(Font.font(18));
+		sideNote.setTextFill(Color.WHITE);
+
+		sideNote.setLayoutX(0);
+		sideNote.setLayoutY(60);
+		mainPane.getChildren().add(sideNote);
+		mainPane.getChildren().add(createChampToChoosePlayer1(getChamp()));
+		// Label playerpick=new Label("Player One choose your leader:");
+		playerpick.setLayoutX(0);
+		playerpick.setLayoutY(100);
+		
+
+		playerpick.setFont(new Font("Times New Roman (Headings CS)", 30));
+		playerpick.setTextFill(Color.WHITE);
+		mainPane.getChildren().add(playerpick);
+		createBackground();
+
+	}
+
+	public static ArrayList<Champion> getChamp() {
+		ArrayList<Champion> c = new ArrayList<Champion>();
+		for (int i = 0; i < Game.getAvailableChampions().size(); i++) {
+
+			c.add(Game.getAvailableChampions().get(i));
+		}
+		return c;
+
+	}
+
+	private HBox createChampToChoosePlayer(ArrayList<Champion> Champions) {
+		HBox box = new HBox();
+		box.setSpacing(20);
+
+		for (int i = 0; i < Champions.size(); i++) {
+
+			ChampionPicker champToPick = new ChampionPicker(Champions.get(i));
+			Picker.add(champToPick);
+			ChampionPicked.add(champToPick.getChamp());
+
+			box.getChildren().add(champToPick);
+			initializeListeners(champToPick);
+
+			/*
+			 * champToPick.setOnMousePressed(new EventHandler<MouseEvent>(){ public void
+			 * handle(MouseEvent event) { //
+			 * if(event.getButton().equals(MouseButton.PRIMARY)) {
+			 * champToPick.setIsCircleChoosen(true); //figure how to add to player //} }
+			 * 
+			 * });
+			 */
+		}
+		box.setLayoutX(0);
+		box.setLayoutY(0);
+
+		return box;
+
+	}
+
+	private FlowPane createChampToChoosePlayer1(ArrayList<Champion> Champions) {
+		FlowPane root = new FlowPane(Orientation.VERTICAL,30, 30);
+		root.setPadding(new Insets(5));
+
+		for (int i = 0; i < Champions.size(); i++) {
+
+			ChampionPicker champToPick = new ChampionPicker(Champions.get(i));
+			Picker.add(champToPick);
+
+			root.getChildren().add(champToPick);
+			initializeListeners(champToPick);
+
+			
+		}
+		root.setLayoutX(150);
+		root.setLayoutY(150);
+		// mainPane.getChildren().add(root);
+
+		return root;
+
+	}
+
+	private void createBackground() {
+		Image backgroundImage = new Image(new File("src/resources/Pick.jpg").toURI().toString());
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT,
+				BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, null);
+		mainPane.setBackground(new Background(background));
+
+	}
+
+	private void DoneButton() {
+		Buttons button = new Buttons("Done");
+		mainPane.getChildren().add(button);
+
+		button.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent event) {
+
+				if (!checkNot6()) {
+					GameViewManager gameManager = new GameViewManager(player1, player2, ChampionPicked);
+					gameManager.createNewGame(mainStage);
+				}
+
+			}
+
+		});
+
+		button.setLayoutX(520);
+		button.setLayoutY(600);
+
+	}
+
+	private void initializeListeners(ChampionPicker champToPick) {
+		champToPick.setOnMousePressed(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				if (event.getButton().equals(MouseButton.PRIMARY) && checkNot6() && !champToPick.getIsCircleChoosen()) {
+					champToPick.setIsCircleChoosen(true);
+					// if(n==0)
+					// currentGame.getFirstPlayer().setLeader(champToPick.getChamp());
+					// if(n==3)
+					// currentGame.getSecondPlayer().setLeader(champToPick.getChamp());
+
+					ChampionPicked.add(champToPick.getChamp());
+					n++;
+
+					if (n == 1) {
+
+						playerpick.setText("Player one choose your second champion");
+					}
+					if (n == 2) {
+						playerpick.setText("Player one choose your third champion");
+					}
+					if (n == 3) {
+						playerpick.setText("Player two choose your leader");
+					}
+					if (n == 4) {
+						playerpick.setText("Player two choose your second champion");
+					}
+					if (n == 5) {
+						playerpick.setText("Player two choose your third champion");
+					}
+
+				}
+			}
+
+		});
+
+	}
+
+	private void initializeListeners(ImageView image) {
+		// image.setOnMouseMoved(getOnDragDetected());
+		image.setOnMousePressed(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+
+				if (event.getButton().equals(MouseButton.PRIMARY)) {
+					// Tool tip=
+					// mainPane.getChildren().add(tip)
+
+					// figure how to add to player
+				}
+			}
+
+		});
+
+	}
+
+	private boolean checkNot6() {
+		int num = 0;
+		for (int i = 0; i < Picker.size(); i++) {
+			if (Picker.get(i).getIsCircleChoosen()) {
+				num++;
+			}
+
+		}
+		if (num < 6)
+			return true;
+		else
+			return false;
+
+	}
+
+	private void DisplayPlayers(String player1, String player2) {
+		Label labelPlayer1 = new Label("Player One: " + player1);
+		labelPlayer1.setTextFill(Color.web("#9FADBD"));
+		labelPlayer1.setTextFill(Color.web("#FFFFFF"));
+		labelPlayer1.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
+		Label labelPlayer2 = new Label("Player Two: " + player2);
+		labelPlayer2.setTextFill(Color.web("#FFFFFF"));
+		labelPlayer2.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
+		HBox hbox = new HBox(labelPlayer1, labelPlayer2);
+		hbox.setSpacing(200);
+		hbox.setAlignment(Pos.TOP_CENTER);
+		mainPane.getChildren().add(hbox);
+	}
+
+	public void createNewGame(Stage menuStage, Player Player1, Player Player2) {
+		this.menuStage = menuStage;
+		this.menuStage.hide();
+		mainStage.show();
+
+	}
+
+	public ArrayList<Champion> getChampionsPicked() {
+		return ChampionPicked;
+	}
+
+	
+}

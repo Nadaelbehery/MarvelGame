@@ -12,7 +12,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class EndScene {
@@ -40,6 +42,9 @@ public class EndScene {
 				BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, null);
 		mainPane.setBackground(new Background(background));
 		winner=new TextField();
+		winner.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
+		
+		
 		
 		if((currentGame.checkGameOver()).equals(currentGame.getFirstPlayer())) {
 			winner.setText(currentGame.getFirstPlayer().getName() +" WON!");
